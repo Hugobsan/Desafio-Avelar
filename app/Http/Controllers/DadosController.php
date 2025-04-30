@@ -6,7 +6,9 @@ use App\Facades\FileManager;
 use App\Http\Requests\StoreDadosRequest;
 use App\Http\Requests\UpdateDadosRequest;
 use App\Models\Dados;
+use App\Models\File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class DadosController extends Controller
 {
@@ -62,7 +64,7 @@ class DadosController extends Controller
             DB::commit();
 
             toastr()->success('Dados salvos com sucesso!');
-            return redirect()->route('dados.index');
+            return back();
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -82,7 +84,7 @@ class DadosController extends Controller
             $this->storeDados($request, $dados);
             DB::commit();
             toastr()->success('Dados atualizados com sucesso!');
-            return redirect()->route('dados.index');
+            return back();
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -98,7 +100,39 @@ class DadosController extends Controller
     {
         $dados->delete();
         toastr()->success('Dados excluídos com sucesso!');
-        return redirect()->route('dados.index');
+        return back();
+    }
+
+    // Armazena um novo anexo (para um dado já existente)
+    public function storeAnexo(Request $request, Dados $dados)
+    {
+        DB::beginTransaction();
+        try {
+            // Processa os anexos
+            if ($request->hasFile('anexo')) {
+                $anexo = FileManager::upload($request->file('anexo'), 'dados/anexos');
+                $dados->anexos()->create([
+                    'file_id' => $anexo->id,
+                ]);
+            }
+
+            DB::commit();
+            toastr()->success('Anexo salvo com sucesso!');
+            return back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            toastr()->error('Erro ao salvar o anexo!');
+            return back();
+        }
+    }
+
+    // Remove um anexo (para um dado já existente)
+    public function destroyAnexo(File $file)
+    {
+        FileManager::delete($file);
+        DB::commit();
+        toastr()->success('Anexo excluído com sucesso!');
+        return back();
     }
 
     /**
@@ -109,7 +143,6 @@ class DadosController extends Controller
      */
     protected function storeDados($request, $dados)
     {
-        
         $dados->updateOrCreate(
             ['id' => $dados->id],
             $request->only([
