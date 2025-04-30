@@ -63,7 +63,7 @@ class DadosController extends Controller
             $dados = new Dados();
 
             // Usa a função storeDados para criar os dados e endereço
-            $this->storeDados($request, $dados);
+            $dados = $this->storeDados($request, $dados);
 
             // Processa os anexos
             if ($request->hasFile('anexos')) {
@@ -83,9 +83,9 @@ class DadosController extends Controller
             return back();
         } catch (\Exception $e) {
             DB::rollBack();
-
+            Log::error('Erro ao salvar os dados: ' . $e->getMessage());
             toastr()->error('Erro ao salvar os dados!');
-            return back();
+            return back()->withInput();
         }
     }
 
@@ -97,13 +97,13 @@ class DadosController extends Controller
         DB::beginTransaction();
         try {
             // Usa a função storeDados para atualizar os dados e endereço
-            $this->storeDados($request, $dados);
+            $dados = $this->storeDados($request, $dados);
             DB::commit();
             toastr()->success('Dados atualizados com sucesso!');
             return back();
         } catch (\Exception $e) {
             DB::rollBack();
-
+            Log::error('Erro ao atualizar os dados: ' . $e->getMessage());
             toastr()->error('Erro ao atualizar os dados!');
             return back();
         }
@@ -153,12 +153,12 @@ class DadosController extends Controller
     /**
      * Função para armazenar os dados com updateOrCreate
      * @param mixed $request
-     * @param mixed $dados
+     * @param Dados $dados
      * @return void
      */
-    protected function storeDados($request, $dados)
+    protected function storeDados($request, $dados): Dados
     {
-        $dados->updateOrCreate(
+        $dados = $dados->updateOrCreate(
             ['id' => $dados->id],
             $request->only([
                 'nome',
@@ -181,5 +181,7 @@ class DadosController extends Controller
                 'complemento'
             ])
         );
+
+        return $dados;
     }
 }

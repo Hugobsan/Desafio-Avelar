@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Desafio Avelar</title>
@@ -10,6 +11,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .file-name-truncate {
+            display: inline-block;
+            max-width: 340px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
@@ -17,35 +29,14 @@
         <h2>Desafio Avelar</h2>
 
         <div class="row mb-4 mt-4">
-            <x-numeric-widget 
-                title="Total de Pessoas"
-                icon="fa-users"
-                :value="$dados->total()"
-                description="Quantidade total de pessoas cadastradas"
-                color="primary"
-            />
-            <x-numeric-widget 
-                title="Média Salarial"
-                icon="fa-money-bill-wave"
-                :value="$insights['mediaSalarial']"
-                description="Média dos salários cadastrados"
-                color="success"
-                :isMoney="true"
-            />
-            <x-numeric-widget 
-                title="Com Ensino Médio"
-                icon="fa-graduation-cap"
-                :value="$insights['ensinoMedio']"
-                description="Quantidade de pessoas com ensino médio"
-                color="info"
-            />
-            <x-numeric-widget 
-                title="Total de Anexos"
-                icon="fa-paperclip"
-                :value="$insights['totalAnexos']"
-                description="Quantidade total de Anexos no Sistema"
-                color="warning"
-            />
+            <x-numeric-widget title="Total de Pessoas" icon="fa-users" :value="$dados->total()"
+                description="Quantidade total de pessoas cadastradas" color="primary" />
+            <x-numeric-widget title="Média Salarial" icon="fa-money-bill-wave" :value="$insights['mediaSalarial']"
+                description="Média dos salários cadastrados" color="success" :isMoney="true" />
+            <x-numeric-widget title="Com Ensino Médio" icon="fa-graduation-cap" :value="$insights['ensinoMedio']"
+                description="Quantidade de pessoas com ensino médio" color="info" />
+            <x-numeric-widget title="Total de Anexos" icon="fa-paperclip" :value="$insights['totalAnexos']"
+                description="Quantidade total de Anexos no Sistema" color="warning" />
         </div>
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-2">
@@ -56,10 +47,26 @@
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-            <button class="btn btn-success" type="button" data-bs-toggle="tooltip" title="Adicionar nova pessoa"
-                disabled>
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modalCreatePessoa"
+                title="Adicionar nova pessoa">
                 <i class="fas fa-user-plus"></i> Nova Pessoa
             </button>
+        </div>
+
+        <!-- Modal de criação/edição de pessoa -->
+        <div class="modal fade" id="modalCreatePessoa" tabindex="-1" aria-labelledby="modalCreatePessoaLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCreatePessoaLabel">Nova Pessoa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <x-create-dados />
+                    </div>
+                </div>
+            </div>
         </div>
 
         @if ($dados->count())
@@ -116,7 +123,8 @@
                                     {{ ucfirst($dado->sexo) ?? '-' }}
                                 </p>
                                 <p class="mb-1">
-                                    <span class="fw-semibold"><i class="fas fa-money-bill-wave me-1"></i>Salário:</span>
+                                    <span class="fw-semibold"><i
+                                            class="fas fa-money-bill-wave me-1"></i>Salário:</span>
                                     R$ {{ number_format($dado->salario, 2, ',', '.') }}
                                 </p>
                                 <p class="mb-1">
@@ -125,7 +133,8 @@
                                 </p>
                                 <hr>
                                 <p class="mb-1">
-                                    <span class="fw-semibold"><i class="fas fa-map-marker-alt me-1"></i>Endereço:</span>
+                                    <span class="fw-semibold"><i
+                                            class="fas fa-map-marker-alt me-1"></i>Endereço:</span>
                                     @if ($dado->endereco)
                                         {{ $dado->endereco->rua ?? '-' }},
                                         {{ $dado->endereco->numero ?? '-' }}{{ $dado->endereco->complemento ? ' - ' . $dado->endereco->complemento : '' }}<br>
@@ -144,8 +153,8 @@
                                         <form method="POST" action="{{ route('dados.storeAnexo', $dado->id) }}"
                                             enctype="multipart/form-data" class="d-inline-block">
                                             @csrf
-                                            <label class="btn btn-sm btn-outline-primary mb-0" data-bs-toggle="tooltip"
-                                                title="Adicionar anexo">
+                                            <label class="btn btn-sm btn-outline-primary mb-0"
+                                                data-bs-toggle="tooltip" title="Adicionar anexo">
                                                 <i class="fas fa-plus"></i>
                                                 <input type="file" name="anexo" accept=".pdf,.jpg,.jpeg,.png"
                                                     class="d-none" onchange="this.form.submit()">
@@ -158,8 +167,8 @@
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                     <a href="{{ asset('storage/' . $anexo->path) }}" target="_blank"
-                                                        class="text-decoration-none" data-bs-toggle="tooltip"
-                                                        title="Abrir anexo">
+                                                        class="text-decoration-none file-name-truncate"
+                                                        data-bs-toggle="tooltip" title="Abrir anexo">
                                                         <i
                                                             class="fas fa-file-{{ $anexo->extension === 'pdf' ? 'pdf' : 'image' }} text-secondary me-2"></i>
                                                         {{ $anexo->name }}
