@@ -19,7 +19,7 @@ Este repositório é a base para avaliar suas habilidades full-stack em Laravel 
 
 ```bash
 # 1. Clonar o repositório
-git clone https://github.com/brnofreire/Desafio-Avelar.git
+git clone https://github.com/Hugobsan/Desafio-Avelar.git
 cd Desafio-Avelar
 
 # 2. Instalar dependências PHP
@@ -38,9 +38,8 @@ php artisan key:generate
 # 5. Criar link simbólico para uploads
 php artisan storage:link
 
-# 6. (Opcional) Instalar e compilar assets front-end
-npm install
-npm run dev
+# 6. Rodar migrations e seeders
+php artisan migrate --seed
 
 # 7. Executar servidor de desenvolvimento
 php artisan serve
@@ -49,24 +48,8 @@ php artisan serve
 
 ```
 ## 💾 Banco de Dados
-Antes de rodar a aplicação, no seu cliente MySQL execute:
+Ao rodar o comando `php artisan migrate --seed`, o banco de dados será criado automaticamente, além de popular com dados de exemplo.
 
-```bash
-CREATE TABLE dados (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(150)        NOT NULL,
-  idade INT                NOT NULL,
-  cep VARCHAR(13)           NOT NULL,
-  cidade VARCHAR(100)      NOT NULL,
-  estado VARCHAR(2)        NOT NULL,
-  rua VARCHAR(150)         NOT NULL,
-  bairro VARCHAR(100)      NOT NULL,
-  ensino_medio TINYINT(1)  NOT NULL,
-  sexo VARCHAR(20)         NOT NULL,
-  salario DECIMAL(12,2)    NOT NULL,
-  anexo VARCHAR(255)       NOT NULL
-);
-```
 ## 🎯 Objetivo do Desafio
 ## **Front-end**
 ### Página única com Blade + HTML/CSS/Bootstrap/JavaScript, seja criativo e não se prenda em visuais genéricos, queremos ver seu potencial!!
