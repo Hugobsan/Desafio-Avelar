@@ -8,7 +8,8 @@ use App\Http\Requests\UpdateDadosRequest;
 use App\Models\Dados;
 use App\Models\File;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DadosController extends Controller
 {
@@ -31,7 +32,7 @@ class DadosController extends Controller
             });
         }
 
-        $dados = $query->paginate(10)->withQueryString();
+        $dados = $query->paginate(3)->withQueryString();
         return view('dados.index', compact('dados'));
     }
 
@@ -55,9 +56,8 @@ class DadosController extends Controller
                     FileManager::upload($file, 'dados/anexos');
 
                     // Cria o relacionamento com o arquivo
-                    $dados->anexos()->create([
-                        'file_id' => FileManager::getFileId(),
-                    ]);
+                    $anexo = FileManager::upload($file, 'dados/anexos');
+                    $dados->anexos()->attach($anexo->id);
                 }
             }
 
@@ -111,15 +111,14 @@ class DadosController extends Controller
             // Processa os anexos
             if ($request->hasFile('anexo')) {
                 $anexo = FileManager::upload($request->file('anexo'), 'dados/anexos');
-                $dados->anexos()->create([
-                    'file_id' => $anexo->id,
-                ]);
+                $dados->anexos()->attach($anexo->id);
             }
 
             DB::commit();
             toastr()->success('Anexo salvo com sucesso!');
             return back();
         } catch (\Exception $e) {
+            Log::error('Erro ao salvar o anexo: ' . $e->getMessage());
             DB::rollBack();
             toastr()->error('Erro ao salvar o anexo!');
             return back();

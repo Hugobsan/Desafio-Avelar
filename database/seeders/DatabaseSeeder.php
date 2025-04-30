@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        
+        // Como endereço depende de Dados, ao criar o endereço, dados também é criado
+        \App\Models\Endereco::factory(20)->create();
     }
 }
