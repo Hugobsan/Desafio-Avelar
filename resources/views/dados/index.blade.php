@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
-
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Desafio Avelar</title>
@@ -16,6 +15,39 @@
 <body class="bg-light">
     <div class="container py-4">
         <h2>Desafio Avelar</h2>
+
+        <div class="row mb-4 mt-4">
+            <x-numeric-widget 
+                title="Total de Pessoas"
+                icon="fa-users"
+                :value="$dados->total()"
+                description="Quantidade total de pessoas cadastradas"
+                color="primary"
+            />
+            <x-numeric-widget 
+                title="Média Salarial"
+                icon="fa-money-bill-wave"
+                :value="$insights['mediaSalarial']"
+                description="Média dos salários cadastrados"
+                color="success"
+                :isMoney="true"
+            />
+            <x-numeric-widget 
+                title="Com Ensino Médio"
+                icon="fa-graduation-cap"
+                :value="$insights['ensinoMedio']"
+                description="Quantidade de pessoas com ensino médio"
+                color="info"
+            />
+            <x-numeric-widget 
+                title="Total de Anexos"
+                icon="fa-paperclip"
+                :value="$insights['totalAnexos']"
+                description="Quantidade total de Anexos no Sistema"
+                color="warning"
+            />
+        </div>
+
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-2">
             <form class="d-flex flex-grow-1 me-2" method="get" action="{{ route('dados.index') }}">
                 <input type="text" name="q" class="form-control me-2"
@@ -86,6 +118,10 @@
                                 <p class="mb-1">
                                     <span class="fw-semibold"><i class="fas fa-money-bill-wave me-1"></i>Salário:</span>
                                     R$ {{ number_format($dado->salario, 2, ',', '.') }}
+                                </p>
+                                <p class="mb-1">
+                                    <span class="fw-semibold"><i class="fas fa-calendar"></i> Cadastrado em:</span>
+                                    {{ $dado->created_at->format('d/m/Y H:i') }}
                                 </p>
                                 <hr>
                                 <p class="mb-1">

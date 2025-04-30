@@ -33,7 +33,23 @@ class DadosController extends Controller
         }
 
         $dados = $query->paginate(3)->withQueryString();
-        return view('dados.index', compact('dados'));
+
+        // Média Salarial
+        $mediaSalarial = Dados::where('salario', '>', 0)->avg('salario');
+
+        // Total de pessoas com ensino médio
+        $ensinoMedio = Dados::where('ensino_medio', true)->count();
+
+        // Total de anexos no sistema
+        $totalAnexos = File::count();
+
+        $insights = [
+            'mediaSalarial' => $mediaSalarial,
+            'ensinoMedio' => $ensinoMedio,
+            'totalAnexos' => $totalAnexos,
+        ];
+
+        return view('dados.index', compact('dados', 'insights'));
     }
 
     /**

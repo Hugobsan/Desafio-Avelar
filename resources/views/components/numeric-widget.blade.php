@@ -3,24 +3,18 @@
     'icon' => 'fa-chart-bar',
     'value' => 0,
     'description' => '',
-    'color' => 'primary', // Ex: primary, success, danger, warning, info, secondary, dark
+    'color' => 'primary',
     'isMoney' => false,
     'isHour' => false,
 ])
 
 @php
-    $colorClass = 'text-' . $color;
-    $borderClass = 'border-' . $color;
-    $formattedValue = $value;
-    if ($isMoney) {
-        $formattedValue = 'R$ ' . number_format($value, 2, ',', '.');
-    } elseif ($isHour) {
-        $formattedValue = sprintf('%02dh%02dm', floor($value), ($value - floor($value)) * 60);
-    }
+    $colorClass = "text-{$color}";
+    $borderClass = "border-{$color}";
 @endphp
 
 <div class="col-12 col-md-6 col-lg-3 mb-4">
-    <div class="card shadow-sm border-2 border {{ $borderClass }} rounded h-100">
+    <div class="card shadow-sm border {{ $borderClass }} rounded h-100">
         <div class="card-body d-flex flex-column align-items-start">
             <div class="d-flex align-items-center mb-2 w-100">
                 <span class="{{ $colorClass }} me-2 fs-4">
@@ -28,7 +22,7 @@
                 </span>
                 <span class="fw-semibold fs-5 {{ $colorClass }}">{{ $title }}</span>
                 @if($description)
-                    <span class="ms-2" data-bs-toggle="tooltip" title="{{ $description }}">
+                    <span class="ms-auto" data-bs-toggle="tooltip" title="{{ $description }}">
                         <i class="fa fa-info-circle text-muted"></i>
                     </span>
                 @endif
