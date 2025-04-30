@@ -32,8 +32,8 @@
         </div>
         <div class="col-md-3">
             <label class="form-label">Salário *</label>
-            <input type="text" name="salario" class="form-control @error('salario') is-invalid @enderror"
-                value="{{ old('salario', isset($dados->salario) ? number_format($dados->salario, 2, ',', '.') : '') }}" required pattern="^\d{1,3}(\.\d{3})*,\d{2}$|^\d+,\d{2}$">
+            <input type="text" name="salario" id="salario" class="form-control @error('salario') is-invalid @enderror"
+                value="{{ old('salario', isset($dados->salario) ? number_format($dados->salario, 2, ',', '.') : '') }}" required pattern="^\d{1,3}(\.\d{3})*(,\d{2})?$|^\d+(,\d{2})?$">
             @error('salario') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
         <div class="col-md-4">
@@ -172,5 +172,16 @@ document.addEventListener('DOMContentLoaded', function() {
             setReadOnly([cidadeInput, estadoInput, bairroInput, ruaInput], true);
         }
     });
+
+    const salarioInput = document.getElementById('salario');
+    if (salarioInput) {
+        salarioInput.addEventListener('input', function(e) {
+            let v = this.value.replace(/\D/g, '');
+            v = (v/100).toFixed(2) + '';
+            v = v.replace('.', ',');
+            v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+            this.value = v;
+        });
+    }
 });
 </script>

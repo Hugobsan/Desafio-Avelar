@@ -15,6 +15,7 @@ class NumericWidget extends Component
     public string $color;
     public bool $isMoney;
     public bool $isHour;
+    public bool $isPercent;
     public string $formattedValue;
 
     /**
@@ -27,7 +28,8 @@ class NumericWidget extends Component
         $description = '',
         $color = 'primary',
         $isMoney = false,
-        $isHour = false
+        $isHour = false,
+        $isPercent = false 
     ) {
         $this->title = $title;
         $this->icon = $icon;
@@ -36,19 +38,18 @@ class NumericWidget extends Component
         $this->color = $color;
         $this->isMoney = filter_var($isMoney, FILTER_VALIDATE_BOOLEAN);
         $this->isHour = filter_var($isHour, FILTER_VALIDATE_BOOLEAN);
+        $this->isPercent = filter_var($isPercent, FILTER_VALIDATE_BOOLEAN);
         $this->formattedValue = $this->formatValue();
     }
 
     protected function formatValue()
     {
-        if ($this->isMoney) {
-            return 'R$ ' . number_format($this->value, 2, ',', '.');
-        } elseif ($this->isHour) {
-            $h = floor($this->value);
-            $m = ($this->value - $h) * 60;
-            return sprintf('%02dh%02dm', $h, $m);
-        }
-        return $this->value;
+        return match (true) {
+            $this->isMoney => 'R$ ' . number_format($this->value, 2, ',', '.'),
+            $this->isHour => sprintf('%02dh%02dm', floor($this->value), ($this->value - floor($this->value)) * 60),
+            $this->isPercent => number_format($this->value * 100, 2) . '%',
+            default => $this->value,
+        };
     }
 
     /**

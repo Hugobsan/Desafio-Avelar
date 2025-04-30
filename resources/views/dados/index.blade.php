@@ -168,7 +168,7 @@
                                 <hr>
                                 <div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="fw-semibold"><i class="fas fa-paperclip me-1"></i>Anexos</span>
+                                        <span class="fw-semibold" data-bs-toggle="tooltip" title="Limite de 10MB por arquivo"><i class="fas fa-paperclip me-1"></i>Anexos</span>
                                         <form method="POST" action="{{ route('dados.storeAnexo', $dado->id) }}"
                                             enctype="multipart/form-data" class="d-inline-block">
                                             @csrf
@@ -176,7 +176,8 @@
                                                 data-bs-toggle="tooltip" title="Adicionar anexo">
                                                 <i class="fas fa-plus"></i>
                                                 <input type="file" name="anexo" accept=".pdf,.jpg,.jpeg,.png"
-                                                    class="d-none" onchange="this.form.submit()">
+                                                    class="d-none"
+                                                    onchange="if(this.files[0] && this.files[0].size>10485760){alert('Arquivo excede 10MB!');this.value='';}else{this.form.submit();}">
                                             </label>
                                         </form>
                                     </div>
