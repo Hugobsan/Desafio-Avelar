@@ -33,7 +33,7 @@
         <div class="col-md-3">
             <label class="form-label">Salário *</label>
             <input type="text" name="salario" class="form-control @error('salario') is-invalid @enderror"
-                value="{{ old('salario', $dados->salario ?? '') }}" required pattern="^\d{1,3}(\.\d{3})*,\d{2}$|^\d+,\d{2}$">
+                value="{{ old('salario', isset($dados->salario) ? number_format($dados->salario, 2, ',', '.') : '') }}" required pattern="^\d{1,3}(\.\d{3})*,\d{2}$|^\d+,\d{2}$">
             @error('salario') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
         <div class="col-md-4">

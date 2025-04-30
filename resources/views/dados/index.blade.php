@@ -69,6 +69,24 @@
             </div>
         </div>
 
+        <!-- Modal de edição de pessoa -->
+        <div class="modal fade" id="modalEditPessoa" tabindex="-1" aria-labelledby="modalEditPessoaLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalEditPessoaLabel">Editar Pessoa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body" id="editPessoaBody">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @if ($dados->count())
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 @foreach ($dados as $dado)
@@ -89,7 +107,8 @@
                                     <ul class="dropdown-menu dropdown-menu-end"
                                         aria-labelledby="dropdownMenu{{ $dado->id }}">
                                         <li>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="tooltip"
+                                            <a class="dropdown-item btn-edit-pessoa" href="#" 
+                                                data-id="{{ $dado->id }}" data-bs-toggle="tooltip"
                                                 title="Editar">
                                                 <i class="fas fa-edit me-2"></i> Editar
                                             </a>
@@ -219,6 +238,25 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        // Evento para abrir modal de edição e carregar dados via AJAX
+        $(document).on('click', '.btn-edit-pessoa', function(e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+
+            const editModal = new bootstrap.Modal(document.getElementById('modalEditPessoa'), {
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            editModal.show();
+            $('#editPessoaBody').html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>');
+            $.get('/dados/' + id + '/edit', function(html) {
+                $('#editPessoaBody').html(html);
+            }).fail(function() {
+                $('#editPessoaBody').html('<div class="alert alert-danger">Erro ao carregar dados para edição.</div>');
+            });
+        });
     </script>
 </body>
 

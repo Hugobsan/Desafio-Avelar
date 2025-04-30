@@ -184,4 +184,13 @@ class DadosController extends Controller
 
         return $dados;
     }
+
+    public function edit(Dados $dados)
+    {
+        $endereco = $dados->endereco;
+        return response()->view('components.edit-dados', [
+            'dados' => $dados,
+            'endereco' => $endereco,
+        ]);
+    }
 }
