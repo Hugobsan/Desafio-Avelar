@@ -1,12 +1,8 @@
 <?php
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\DadosController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => redirect()->route('dados.index'));
 
-Route::middleware('web', 'auth')->group(function () {
-    Route::get('/desafio-avelar', [Controller::class, 'index'])->name('desafio.avelar.index');
-});
+Route::get('/desafio-avelar', [DadosController::class, 'index'])->name('dados.index');

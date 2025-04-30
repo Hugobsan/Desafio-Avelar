@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use App\Observers\DadosObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-
+#[ObservedBy([DadosObserver::class])]
 class Dados extends Model
 {
     /** @use HasFactory<\Database\Factories\DadosFactory> */
     use HasFactory;
+
+    protected $table = 'dados';
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

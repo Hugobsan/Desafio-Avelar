@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\ViaCepContract;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ViaCepService implements ViaCepContract
 {
@@ -27,12 +28,23 @@ class ViaCepService implements ViaCepContract
             $response = Http::timeout(10)
                 ->retry(3, 200)
                 ->get(self::BASE_URL . "{$cep}/json/");
-                
+
             // Verifica se a requisição foi bem sucedida e se não houve erro
             if ($response->successful() && !$response->json('erro')) {
-                // Retorna o resultado da requisição e armazena no cache
-                return $response->json();
+                return collect($response->json())->only([
+                    'cep',
+                    'logradouro',
+                    'complemento',
+                    'bairro',
+                    'localidade',
+                    'uf'
+                ])->toArray();
             }
+
+            Log::error('Erro ao buscar endereço no ViaCep', [
+                'cep' => $cep,
+                'response' => $response->json()
+            ]);
 
             return null;
         });

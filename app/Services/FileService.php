@@ -16,7 +16,7 @@ class FileService
      * @param int|null $daysTilExpire
      * @return File
      */
-    public function upload(UploadedFile $file, string $directory = 'uploads', int $daysTilExpire = null): File
+    public function upload(UploadedFile $file, string $directory = 'uploads', int|null $daysTilExpire = null): File
     {
         $path = $file->store($directory); // Usando o disco 'public'
 
